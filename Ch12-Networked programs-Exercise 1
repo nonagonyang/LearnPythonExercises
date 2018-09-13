@@ -1,1 +1,44 @@
-Exercise 1: Change the socket program socket1.py to prompt the user for the URL so it can read any web page. You can use split('/') to break the URL into its component parts so you can extract the host name for the socket connect call. Add error checking using try and except to handle the condition where the user enters an improperly formatted or non-existent URL.
+#Exercise 1: Change the socket program socket1.py to prompt the user for the URL so it can read any web page. You can use split('/') to break the URL into its component parts so you can extract the host name for the socket connect call. Add error checking using try and except to handle the condition where the user enters an improperly formatted or non-existent URL.
+
+
+
+import socket
+mysock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+typeurl = input('Please enter a valid URL here: ')
+words=typeurl.split('/')
+try:
+    hostname = words[2]
+    #print(hostname)
+    mysock.connect((hostname, 80))
+    mysock.send(('GET'+ typeurl+'HTTP/1.0\r\n\r\n').encode())
+except:
+    print('this is not an proper url')
+while True:
+    data = mysock.recv(512)
+    if (len(data) < 1):
+        break
+    print(data.decode(),end='')
+    mysock.close()
+    
+When I run these codes, it shows:
+HTTP/1.1 400 Bad Request
+Date: Thu, 13 Sep 2018 14:27:41 GMT
+Server: Apache/2.4.18 (Ubuntu)
+Content-Length: 308
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>400 Bad Request</title>
+</head><body>
+<h1>Bad Request</h1>
+<p>Your browser sent a request that this server could not understand.<br />
+</p>
+<hr>
+<address>Apache/2.4.18 (Ubuntu) Server at do1.dr-chuck.com Port 80</address>
+</body></html>
+Traceback (most recent call last):
+  File "ex_12.1.py", line 13, in <module>
+    data = mysock.recv(512)
+OSError: [Errno 9] Bad file descriptor
